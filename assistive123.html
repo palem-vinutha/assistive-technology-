@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistive Technologies Web App</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Assistive Technologies Web App</h1>
+    </header>
+    <div class="container">
+        <!-- Text-to-Speech -->
+        <div class="card">
+            <h3>Text-to-Speech</h3>
+            <textarea id="tts-text" placeholder="Enter text here..."></textarea>
+            <button onclick="speakText()">Speak Text</button>
+        </div>
+
+        <!-- Speech-to-Text -->
+        <div class="card">
+            <h3>Speech-to-Text</h3>
+            <button onclick="startListening()">Start Listening</button>
+            <p id="stt-output">Your speech will appear here.</p>
+        </div>
+
+        <!-- Magnifier -->
+        <div class="card">
+            <h3>Magnifier</h3>
+            <p id="magnifier-text">Sample text for magnification.</p>
+            <button onclick="magnifyText()">Magnify</button>
+            <button onclick="resetMagnify()">Reset</button>
+        </div>
+
+        <!-- Screen Reader Simulation -->
+        <div class="card">
+            <h3>Screen Reader Simulation</h3>
+            <p id="screen-reader-text">This is a sample content that will be read aloud when the screen reader is activated.</p>
+            <button onclick="activateScreenReader()">Activate Screen Reader</button>
+        </div>
+
+        <!-- Text Resizer -->
+        <div class="card">
+            <h3>Text Resizer</h3>
+            <textarea id="resizer-text" placeholder="Enter text here..."></textarea>
+            <button onclick="increaseTextSize()">Increase Size</button>
+            <button onclick="decreaseTextSize()">Decrease Size</button>
+        </div>
+
+        <!-- Virtual Keyboard -->
+        <div class="card">
+            <h3>Virtual Keyboard</h3>
+            <input type="text" id="keyboard-input" placeholder="Type here...">
+            <div>
+                <button onclick="addChar('A')">A</button>
+                <button onclick="addChar('B')">B</button>
+                <!-- Add more keys as needed -->
+                <button onclick="addChar('Space')">Space</button>
+                <button onclick="addChar('Backspace')">Backspace</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Text-to-Speech
+        function speakText() {
+            const text = document.getElementById('tts-text').value;
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
+        }
+
+        // Speech-to-Text
+        function startListening() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.onresult = (event) => {
+                document.getElementById('stt-output').innerText = event.results[0][0].transcript;
+            };
+            recognition.start();
+        }
+
+        // Magnifier
+        function magnifyText() {
+            document.getElementById('magnifier-text').style.fontSize = '2em';
+        }
+        function resetMagnify() {
+            document.getElementById('magnifier-text').style.fontSize = '1em';
+        }
+
+        // Screen Reader
+        function activateScreenReader() {
+            const text = document.getElementById('screen-reader-text').innerText;
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
+        }
+
+        // Text Resizer
+        function increaseTextSize() {
+            const textArea = document.getElementById('resizer-text');
+            const currentSize = parseInt(window.getComputedStyle(textArea).fontSize);
+            textArea.style.fontSize = (currentSize + 2) + 'px';
+        }
+        function decreaseTextSize() {
+            const textArea = document.getElementById('resizer-text');
+            const currentSize = parseInt(window.getComputedStyle(textArea).fontSize);
+            textArea.style.fontSize = (currentSize - 2) + 'px';
+        }
+
+        // Virtual Keyboard
+        function addChar(char) {
+            const input = document.getElementById('keyboard-input');
+            if (char === 'Backspace') {
+                input.value = input.value.slice(0, -1);
+            } else if (char === 'Space') {
+                input.value += ' ';
+            } else {
+                input.value += char;
+            }
+        }
+    </script>
+</body>
+</html>
